@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Journey Into The Soul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Frank+Ruhl+Libre:wght@300;500;700&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     ALBUM / SONG CONTENT LIVES IN THE <script> AT THE BOTTOM.
+     Add/remove albums, songs, mp3 paths, and lyrics there.
+     ============================================================ */
+
+  :root{
+    --bg:            #0d0a08;
+    --bg-raised:     #17120e;
+    --bg-card:       #1c160f;
+    --text:          #f1e7d6;
+    --muted:         #a3937c;
+    --muted-dim:     #6b5f4f;
+    --gold:          #d1a44e;
+    --gold-soft:     #e8c988;
+    --oxblood:       #6a2c26;
+    --line:          rgba(241,231,214,0.09);
+    --shadow:        rgba(0,0,0,0.55);
+    --ease:          cubic-bezier(.22,.61,.36,1);
+
+    --font-display:  'Fraunces', serif;
+    --font-body:     'Inter', sans-serif;
+    --font-mono:     'IBM Plex Mono', monospace;
+  }
+
+  body.lang-he{
+    --font-display:  'Frank Ruhl Libre', serif;
+    --font-body:     'Heebo', sans-serif;
+    --font-mono:     'Heebo', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-weight:300;
+    overflow-x:hidden;
+    min-height:100vh;
+    position:relative;
+    direction:ltr;
+  }
+  body.lang-he{ direction:rtl; }
+  body.lang-he .title em{ font-style:normal; }
+
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:1;
+    background:radial-gradient(ellipse at 50% 30%, rgba(209,164,78,0.05), transparent 60%),
+               radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.6), transparent 55%);
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--gold); color:#1a1208; }
+
+  .wrap{
+    position:relative;
+    z-index:2;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:34px 0 0;
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+    gap:16px;
+  }
+  header.top .mark{ color:var(--gold); }
+
+  .lang-toggle{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    background:rgba(241,231,214,0.04);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:8px 16px;
+    cursor:pointer;
+    transition:all .3s ease;
+    white-space:nowrap;
+  }
+  .lang-toggle:hover{
+    color:var(--gold);
+    border-color:var(--gold);
+    background:rgba(209,164,78,0.08);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:86vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:60px 0 40px;
+  }
+
+  .vinyl{
+    position:absolute;
+    top:50%; left:50%;
+    width:640px; height:640px;
+    transform:translate(-50%,-52%);
+    border-radius:50%;
+    background:
+      repeating-radial-gradient(circle at center,
+        rgba(209,164,78,0.05) 0px,
+        rgba(209,164,78,0.05) 1px,
+        transparent 2px,
+        transparent 7px);
+    opacity:0.5;
+    animation:spin 60s linear infinite;
+    pointer-events:none;
+  }
+  .vinyl::before{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:50%;
+    border:1px solid rgba(209,164,78,0.08);
+  }
+  @keyframes spin{ to{ transform:translate(-50%,-52%) rotate(360deg);} }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:26px;
+    position:relative;
+    z-index:2;
+  }
+  body.lang-he .eyebrow{ letter-spacing:0.06em; }
+
+  h1.title{
+    font-family:var(--font-display);
+    font-optical-sizing:auto;
+    font-weight:500;
+    font-size:clamp(2.6rem, 8vw, 6.4rem);
+    line-height:1.15;
+    letter-spacing:-0.01em;
+    max-width:16ch;
+    position:relative;
+    z-index:2;
+  }
+  h1.title em{
+    font-style:italic;
+    font-weight:300;
+    color:var(--gold-soft);
+  }
+
+  .subtitle{
+    margin-top:26px;
+    font-size:15px;
+    font-weight:300;
+    color:var(--muted);
+    max-width:38ch;
+    line-height:1.7;
+    letter-spacing:0.01em;
+    position:relative;
+    z-index:2;
+  }
+
+  .scroll-cue{
+    margin-top:56px;
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue .line{
+    width:1px; height:34px;
+    background:linear-gradient(var(--gold), transparent);
+  }
+
+  /* ---------- section heading ---------- */
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:100px 0 40px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-head h2{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:clamp(1.8rem, 3.4vw, 2.6rem);
+  }
+  .section-head span{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.2em;
+    color:var(--muted-dim);
+    text-transform:uppercase;
+  }
+
+  /* ---------- album grid ---------- */
+  .albums{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:28px;
+    padding:44px 0 30px;
+  }
+
+  .album-card{
+    position:relative;
+    cursor:pointer;
+    border:none;
+    background:none;
+    text-align:start;
+    color:inherit;
+    font:inherit;
+    padding:0;
+  }
+
+  .art{
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:3px;
+    overflow:hidden;
+    background:linear-gradient(155deg, var(--bg-card), var(--bg-raised));
+    box-shadow:0 20px 40px -18px var(--shadow);
+    transition:transform .55s var(--ease), box-shadow .55s var(--ease);
+  }
+
+  .art img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    filter:saturate(0.85) contrast(1.05);
+    transition:transform .7s var(--ease), filter .5s ease;
+  }
+
+  .disc{
+    position:absolute;
+    top:8%;
+    right:-38%;
+    width:82%;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    background:
+      repeating-radial-gradient(circle at center,
+        #0a0806 0px, #0a0806 2px,
+        #141009 3px, #141009 5px);
+    box-shadow:inset 0 0 0 1px rgba(209,164,78,0.15);
+    transition:right .6s var(--ease), transform .6s var(--ease);
+    z-index:-1;
+  }
+  .disc::after{
+    content:"";
+    position:absolute;
+    top:50%; left:50%;
+    width:30%; height:30%;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle, var(--gold-soft), var(--gold) 70%, #7a5a22 100%);
+    box-shadow:0 0 0 1px rgba(0,0,0,0.4);
+  }
+
+  .album-card:hover .disc{ right:-14%; transform:rotate(35deg); }
+  .album-card:hover .art{ transform:translateX(-10%); box-shadow:0 26px 50px -16px var(--shadow); }
+  body.lang-he .album-card:hover .art{ transform:translateX(10%); }
+  .album-card:hover .art img{ transform:scale(1.04); }
+  .album-card:focus-visible .art{ outline:2px solid var(--gold); outline-offset:4px; }
+
+  .art .veil{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 45%, rgba(10,7,5,0.92) 100%);
+  }
+
+  .art .label{
+    position:absolute;
+    left:18px; right:18px; bottom:16px;
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:1.28rem;
+    line-height:1.2;
+  }
+
+  .meta-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:14px;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+  }
+  .meta-row .yr{ color:var(--muted); }
+
+  /* ---------- album detail (song list) view ---------- */
+  .detail{ display:none; padding:60px 0 40px; animation:rise .5s var(--ease); }
+  .detail.active{ display:block; }
+  .albums-view.hidden{ display:none; }
+
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+    margin-bottom:48px;
+    transition:color .3s ease, gap .3s ease;
+  }
+  .back-btn:hover{ color:var(--gold); gap:12px; }
+  .back-btn::before{ content:"←"; color:var(--gold); }
+  body.lang-he .back-btn::before{ content:"→"; }
+
+  .detail-head{
+    display:flex;
+    gap:36px;
+    align-items:flex-end;
+    padding-bottom:40px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:8px;
+  }
+  .detail-art{
+    width:180px; height:180px;
+    border-radius:3px;
+    overflow:hidden;
+    flex-shrink:0;
+    box-shadow:0 20px 40px -16px var(--shadow);
+  }
+  .detail-art img{ width:100%; height:100%; object-fit:cover; }
+
+  .detail-info .eyebrow{ margin-bottom:14px; text-align:start; }
+  .detail-info h3{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:clamp(1.9rem, 4vw, 3rem);
+    margin-bottom:10px;
+  }
+  .detail-info p{ color:var(--muted); font-size:14px; max-width:48ch; line-height:1.7; }
+
+  /* ---------- track / player ---------- */
+  .tracklist{ padding-top:10px; }
+  .track{
+    border-bottom:1px solid var(--line);
+    padding:22px 4px;
+    transition:background .3s ease;
+  }
+  .track:hover{ background:linear-gradient(90deg, rgba(209,164,78,0.05), transparent); }
+  body.lang-he .track:hover{ background:linear-gradient(270deg, rgba(209,164,78,0.05), transparent); }
+
+  .track-row{
+    display:grid;
+    grid-template-columns:32px 1fr auto;
+    align-items:center;
+    gap:18px;
+  }
+  .track .num{ font-family:var(--font-mono); font-size:12px; color:var(--gold); }
+  .track .name{ font-family:var(--font-display); font-weight:400; font-size:1.15rem; letter-spacing:0.01em; }
+  .track .dur{ font-family:var(--font-mono); font-size:11px; color:var(--muted-dim); letter-spacing:0.05em; }
+
+  .player{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-top:16px;
+    padding-inline-start:50px;
+  }
+
+  .play-btn{
+    width:38px; height:38px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    background:transparent;
+    color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .25s ease, color .25s ease, transform .2s ease;
+    font-size:0;
+  }
+  .play-btn:hover{ background:var(--gold); color:#1a1208; transform:scale(1.05); }
+  .play-btn svg{ width:13px; height:13px; }
+  .play-btn .icon-pause{ display:none; }
+  .play-btn.playing .icon-play{ display:none; }
+  .play-btn.playing .icon-pause{ display:block; }
+
+  .progress-wrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+  }
+  .progress-bar{
+    position:relative;
+    flex:1;
+    height:3px;
+    background:rgba(241,231,214,0.12);
+    border-radius:2px;
+    cursor:pointer;
+  }
+  .progress-bar .fill{
+    position:absolute; inset-inline-start:0; top:0; bottom:0;
+    width:0%;
+    background:var(--gold);
+    border-radius:2px;
+  }
+  .progress-bar .knob{
+    position:absolute;
+    top:50%; inset-inline-start:0%;
+    width:9px; height:9px;
+    background:var(--gold-soft);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 3px rgba(209,164,78,0.15);
+  }
+  body.lang-he .progress-bar .knob{ transform:translate(50%,-50%); }
+
+  .time{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    color:var(--muted-dim);
+    white-space:nowrap;
+    min-width:74px;
+    text-align:center;
+  }
+
+  .icon-btn{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:rgba(241,231,214,0.03);
+    color:var(--muted);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:all .25s ease;
+    text-decoration:none;
+  }
+  .icon-btn:hover{ color:var(--gold); border-color:var(--gold); background:rgba(209,164,78,0.08); }
+  .icon-btn svg{ width:14px; height:14px; }
+  .icon-btn.disabled{ opacity:0.3; pointer-events:none; }
+
+  .lyrics-toggle{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+    background:none;
+    border:none;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:color .25s ease;
+  }
+  .lyrics-toggle:hover{ color:var(--gold); }
+
+  .lyrics-panel{
+    display:none;
+    margin-top:18px;
+    margin-inline-start:50px;
+    padding:20px 24px;
+    background:rgba(241,231,214,0.03);
+    border-inline-start:2px solid var(--gold);
+    border-radius:2px;
+    white-space:pre-line;
+    font-family:var(--font-body);
+    font-size:14px;
+    line-height:1.9;
+    color:var(--muted);
+  }
+  .lyrics-panel.open{ display:block; animation:rise .35s var(--ease); }
+
+  .no-audio-note{
+    font-family:var(--font-mono);
+    font-size:10px;
+    color:var(--muted-dim);
+    margin-inline-start:50px;
+    margin-top:8px;
+    opacity:0.6;
+  }
+
+  /* ---------- footer ---------- */
+  footer{ margin-top:100px; padding:70px 0 50px; border-top:1px solid var(--line); text-align:center; }
+
+  .quote{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:300;
+    font-size:clamp(1.4rem, 3vw, 2rem);
+    color:var(--gold-soft);
+    letter-spacing:0.01em;
+  }
+  body.lang-he .quote{ font-style:normal; }
+  .quote .sig{
+    display:block;
+    margin-top:10px;
+    font-family:var(--font-mono);
+    font-style:normal;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+  }
+
+  .contact{ margin-top:44px; font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; }
+  .contact a{ color:var(--muted); border-bottom:1px solid transparent; transition:color .3s ease, border-color .3s ease; }
+  .contact a:hover{ color:var(--gold); border-color:var(--gold); }
+  .contact .label{
+    display:block; margin-bottom:10px; color:var(--muted-dim);
+    text-transform:uppercase; letter-spacing:0.25em; font-size:10px;
+  }
+
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    .vinyl{ width:420px; height:420px; }
+    .detail-head{ flex-direction:column; align-items:flex-start; gap:22px; }
+    .detail-art{ width:130px; height:130px; }
+    .player{ padding-inline-start:0; flex-wrap:wrap; }
+    .lyrics-panel{ margin-inline-start:0; }
+    .no-audio-note{ margin-inline-start:0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="top">
+    <span id="brandMark">The Journey <span class="mark">·</span> Into The Soul</span>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLang()">עברית</button>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="vinyl" aria-hidden="true"></div>
+    <div class="eyebrow" id="heroEyebrow">Original Songs &amp; Albums</div>
+    <h1 class="title" id="heroTitle">The journey <em>into</em><br>the soul</h1>
+    <p class="subtitle" id="heroSubtitle">Songs written along the way — quiet ones, restless ones, and a few written just to survive the year they were written in.</p>
+    <div class="scroll-cue">
+      <span id="scrollCue">Listen</span>
+      <span class="line"></span>
+    </div>
+  </section>
+
+  <!-- ================= ALBUM GRID ================= -->
+  <div id="albumsView" class="albums-view">
+    <div class="section-head">
+      <h2 id="albumsHeading">Albums</h2>
+      <span id="albumCount"></span>
+    </div>
+    <div class="albums" id="albumsGrid"><!-- injected by JS --></div>
+  </div>
+
+  <!-- ================= ALBUM DETAIL ================= -->
+  <div id="detailView" class="detail">
+    <button class="back-btn" id="backBtn" onclick="showAlbums()">Back to all albums</button>
+    <div class="detail-head">
+      <div class="detail-art"><img id="detailArt" src="" alt=""></div>
+      <div class="detail-info">
+        <div class="eyebrow" id="detailEyebrow"></div>
+        <h3 id="detailTitle"></h3>
+        <p id="detailDesc"></p>
+      </div>
+    </div>
+    <div class="tracklist" id="tracklist"><!-- injected by JS --></div>
+  </div>
+
+  <footer>
+    <p class="quote">"Do only good"<span class="sig">r.k</span></p>
+    <div class="contact">
+      <span class="label" id="contactLabel">Contact</span>
+      <a href="mailto:mont.b335@gmail.com" id="contactLink">Contact me — mont.b335@gmail.com</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================================
+   EDIT YOUR CONTENT HERE.
+
+   ALBUMS: add as many albums as you want. Each album can have as many
+   songs as you want in its `songs` array.
+
+   Per song:
+     name      – song title (shown in English mode)
+     name_he   – (optional) Hebrew title, shown when the site is switched
+                 to Hebrew. If left out, `name` is reused.
+     duration  – decorative text like "3:42"
+     file      – path or URL to the mp3, e.g. "audio/song1.mp3".
+                 Leave "" until you have a real file — the player will
+                 show a disabled state with a small note.
+     lyrics    – the song's lyrics (English), shown in the expandable panel.
+     lyrics_he – (optional) Hebrew lyrics.
+
+   Per album, `title_he` and `description_he` work the same way.
+
+   `image`: a URL or local path (e.g. "images/cover1.jpg"). Leave "" for
+   an automatically generated placeholder cover.
+   ============================================================================ */
+const ALBUMS = [
+  {
+    title: "Low Light",
+    title_he: "אור עמום",
+    year: "2026",
+    description: "The first record. Written mostly at night, mostly alone.",
+    description_he: "האלבום הראשון. נכתב בעיקר בלילות, בעיקר לבד.",
+    image: "https://images.nightcafe.studio/jobs/TvNvv7HwTKNEUlDgAlUy/TvNvv7HwTKNEUlDgAlUy--0--tlc2X.jpg?tr=w-1600,c-at_max",
+    songs: [
+      { name: "Back to the place", name_he: "בחזרה למקום", duration: "3:34", file: "a/Back to the place.mp3", lyrics: "I’ve walked a thousand miles of gray, Through neon lights that fade away. The noise is loud, the world is fast, I’m running from my shadow’s cast. I built a castle made of sand, But it crumbled in my hand. Now I’m standing in the rain, Washing off the dust and pain. Oh, take me back to where I’m found, To solid earth, to steady ground. To the place where silence speaks, And dries the tear upon my cheeks. I need the walls that know my name, Where everything remains the same. No more wandering, no more race, Just let me be in my own place. I chased the wind, I sought the prize, But saw the truth with weary eyes. The gold was fake, the smiles were cold, A story that was never told. I miss the simple morning light, That chases away the darkest night. The feeling of an open door, Looking for what I had before. The compass spins, the north is lost, I never stopped to count the cost. Of leaving all I loved behind, Trapped inside a restless mind. But through the fog, I see a spark, A tiny candle in the dark. It calls me home, it pulls me near, Making all the vision clear. So turn the ship and guide the wheel, To something real, something I feel. The journey ends where it began, A humble child, a broken plan. I’m coming back to fix the stone, To sit upon my quiet throne. The chaotic storm is finally done, I’m walking towards the setting sun. Oh, take me back to where I’m found, To solid earth, to steady ground. To the place where silence speaks, And dries the tear upon my cheeks. I need the walls that know my name, Where everything remains the same. No more wandering, no more race, Just let me be in my own place.", lyrics_he: "(בית 1) צעדתי אלף מיילים של אפור, דרך אורות ניאון שדוהים ונעלמים. הרעש חזק, העולם מהיר, אני בורח מהצל של עצמי. בניתי טירה עשויה מחול, אך היא התפוררה בתוך ידי. עכשיו אני עומד בגשם, שוטף מעליי את האבק והכאב (פזמון) הו, החזירו אותי למקום בו אני נמצא, לאדמה מוצקה, לקרקע יציבה. למקום שבו השתיקה מדברת, ומייבשת את הדמעה על לחיי. אני צריך את הקירות שמכירים את שמי, היכן שהכל נשאר אותו הדבר. לא עוד נדודים, לא עוד מירוץ, רק תנו לי להיות במקום שלי. (בית 2) רדפתי אחרי הרוח, חיפשתי את הפרס, אך ראיתי את האמת בעיניים עייפות. הזהב היה מזויף, החיוכים היו קרים, סיפור שמעולם לא סופר. אני מתגעגע לאור הבוקר הפשוט, שמגרש את הלילה האפל ביותר. התחושה של דלת פתוחה, מחפש את מה שהיה לי קודם. (בית 3) המצפן מסתובב, הצפון אבוד, מעולם לא עצרתי לחשב את המחיר. של להשאיר את כל מה שאהבתי מאחור, לכוד בתוך תודעה חסרת מנוח. אך מבעד לערפל, אני רואה ניצוץ, נר קטן בתוך החשיכה. הוא קורא לי הביתה, הוא מושך אותי קרוב, הופך את כל הראייה לבהירה. (בית 4) אז סובב את הספינה וכך את ההגה, למשהו אמיתי, משהו שאני מרגיש. המסע מסתיים היכן שהתחיל, ילד עניו, תוכנית שבורה. אני חוזר לתקן את האבן, לשבת על כס המלכות השקט שלי. הסופה הכאוטית נגמרה סוף סוף, אני צועד לעבר השמש השוקעת. (פזמון סיום) הו, החזירו אותי למקום בו אני נמצא, לאדמה מוצקה, לקרקע יציבה. למקום שבו השתיקה מדברת, ומייבשת את הדמעה על לחיי. אני צריך את הקירות שמכירים את שמי, היכן שהכל נשאר אותו הדבר. לא עוד נדודים, לא עוד מירוץ, רק תנו לי להיות במקום שלי." },
+      { name: "lives inside me", name_he: "חי בתוכי", duration: "4:21", file: "a/lives inside me.mp3", lyrics: "", lyrics_he: "הוסיפו כאן את המילים." },
+      // { name: "Say It Twice", name_he: "תגיד את זה פעמיים", duration: "4:02", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+      // { name: "Low Light", name_he: "אור עמום", duration: "3:15", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+      // { name: "Leave The Porch Light On", name_he: "תשאירי את האור דלוק", duration: "3:50", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." }
+    ]
+  },
+  // {
+  //   title: "Still Water",
+  //   title_he: "מים שקטים",
+  //   year: "2023",
+  //   description: "A quieter follow-up. Fewer words, more space between them.",
+  //   description_he: "המשך שקט יותר. פחות מילים, יותר מרחב ביניהן.",
+  //   image: "",
+  //   songs: [
+  //     { name: "Still Water", name_he: "מים שקטים", duration: "3:20", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Sunday Skin", name_he: "עור של יום ראשון", duration: "2:47", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Nothing Urgent", name_he: "שום דבר דחוף", duration: "3:58", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Ordinary Grace", name_he: "חסד פשוט", duration: "4:11", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." }
+  //   ]
+  // },
+  // {
+  //   title: "Into The Soul",
+  //   title_he: "אל תוך הנשמה",
+  //   year: "2025",
+  //   description: "The one that gives the site its name.",
+  //   description_he: "האלבום שנותן לאתר את שמו.",
+  //   image: "",
+  //   songs: [
+  //     { name: "Prelude", name_he: "פרלוד", duration: "1:52", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Into The Soul", name_he: "אל תוך הנשמה", duration: "4:30", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Everything I Owe", name_he: "כל מה שאני חייב", duration: "3:45", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Do Only Good", name_he: "עשה רק טוב", duration: "3:12", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." },
+  //     { name: "Closing Light", name_he: "אור אחרון", duration: "5:02", file: "", lyrics: "Add lyrics here.", lyrics_he: "הוסיפו כאן את המילים." }
+  //   ]
+  // }
+];
+
+/* ---------------- UI strings ---------------- */
+const STRINGS = {
+  en: {
+    brand: 'The Journey <span class="mark">·</span> Into The Soul',
+    toggleLabel: "עברית",
+    eyebrow: "Original Songs &amp; Albums",
+    heroTitle: 'The journey <em>into</em><br>the soul',
+    subtitle: "Songs written along the way — quiet ones, restless ones, and a few written just to survive the year they were written in.",
+    scrollCue: "Listen",
+    albumsHeading: "Albums",
+    tracks: n => `${n} Track${n === 1 ? '' : 's'}`,
+    albumsCount: n => `${n} Album${n === 1 ? '' : 's'}`,
+    backBtn: "Back to all albums",
+    lyricsShow: "Lyrics",
+    lyricsHide: "Hide lyrics",
+    noAudio: "Add an mp3 file path in the code above to enable playback",
+    contactLabel: "Contact",
+    contactText: "Contact me — mont.b335@gmail.com"
+  },
+  he: {
+    brand: 'המסע <span class="mark">·</span> אל תוך הנשמה',
+    toggleLabel: "English",
+    eyebrow: "שירים ואלבומים מקוריים",
+    heroTitle: 'המסע <em>אל</em><br>תוך הנשמה',
+    subtitle: "שירים שנכתבו לאורך הדרך — כאלה שקטים, כאלה חסרי מנוחה, וכמה שנכתבו רק כדי לשרוד את השנה שבה נכתבו.",
+    scrollCue: "להאזנה",
+    albumsHeading: "אלבומים",
+    tracks: n => `${n} שירים`,
+    albumsCount: n => `${n} אלבומים`,
+    backBtn: "חזרה לכל האלבומים",
+    lyricsShow: "מילים",
+    lyricsHide: "הסתר מילים",
+    noAudio: "הוסיפו קובץ mp3 בקוד כדי להפעיל את הנגן",
+    contactLabel: "יצירת קשר",
+    contactText: "צרו קשר — mont.b335@gmail.com"
+  }
+};
+
+let lang = 'en';
+let currentAlbumIndex = null;
+let activeAudio = null;
+
+const grid = document.getElementById('albumsGrid');
+
+function placeholderCover(title, i){
+  const hues = [ ['#3a2a1a','#0d0a08'], ['#2c1f14','#100b08'], ['#33221a','#0e0908'] ];
+  const [a,b] = hues[i % hues.length];
+  return `linear-gradient(155deg, ${a}, ${b})`;
+}
+
+function t(){ return STRINGS[lang]; }
+
+function fmtTime(sec){
+  if (!isFinite(sec) || isNaN(sec)) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+/* ---------------- render: static UI strings ---------------- */
+function renderStrings(){
+  const s = t();
+  document.getElementById('brandMark').innerHTML = s.brand;
+  document.getElementById('langToggle').textContent = s.toggleLabel;
+  document.getElementById('heroEyebrow').innerHTML = s.eyebrow;
+  document.getElementById('heroTitle').innerHTML = s.heroTitle;
+  document.getElementById('heroSubtitle').textContent = s.subtitle;
+  document.getElementById('scrollCue').textContent = s.scrollCue;
+  document.getElementById('albumsHeading').textContent = s.albumsHeading;
+  document.getElementById('albumCount').textContent = s.albumsCount(ALBUMS.length);
+  document.getElementById('backBtn').textContent = s.backBtn;
+  document.getElementById('contactLabel').textContent = s.contactLabel;
+  document.getElementById('contactLink').textContent = s.contactText;
+}
+
+/* ---------------- render: album grid ---------------- */
+function renderAlbums(){
+  const s = t();
+  grid.innerHTML = '';
+  ALBUMS.forEach((album, i) => {
+    const title = (lang === 'he' && album.title_he) ? album.title_he : album.title;
+    const card = document.createElement('button');
+    card.className = 'album-card';
+    card.setAttribute('aria-label', `${title}`);
+    card.onclick = () => showDetail(i);
+
+    const bg = placeholderCover(album.title, i);
+    card.innerHTML = `
+      <div class="art">
+        <div class="disc"></div>
+        ${album.image ? `<img src="${album.image}" alt="${title}">` : `<div style="width:100%;height:100%;background:${bg}"></div>`}
+        <div class="veil"></div>
+        <div class="label">${title}</div>
+      </div>
+      <div class="meta-row">
+        <span>${s.tracks(album.songs.length)}</span>
+        <span class="yr">${album.year || ''}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* ---------------- render: album detail + player ---------------- */
+function showDetail(i){
+  currentAlbumIndex = i;
+  const album = ALBUMS[i];
+  const s = t();
+  const title = (lang === 'he' && album.title_he) ? album.title_he : album.title;
+  const desc = (lang === 'he' && album.description_he) ? album.description_he : (album.description || '');
+
+  document.getElementById('detailEyebrow').textContent = `${String(i+1).padStart(2,'0')} / ${String(ALBUMS.length).padStart(2,'0')}`;
+  document.getElementById('detailTitle').textContent = title;
+  document.getElementById('detailDesc').textContent = desc;
+
+  const artEl = document.getElementById('detailArt');
+  if (album.image) {
+    artEl.src = album.image;
+    artEl.style.display = 'block';
+    artEl.parentElement.style.background = '';
+  } else {
+    artEl.style.display = 'none';
+    artEl.parentElement.style.background = placeholderCover(album.title, i);
+  }
+
+  renderTracklist(album, s);
+
+  document.getElementById('albumsView').classList.add('hidden');
+  document.getElementById('detailView').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderTracklist(album, s){
+  const list = document.getElementById('tracklist');
+  list.innerHTML = album.songs.map((song, idx) => {
+    const id = `${currentAlbumIndex}-${idx}`;
+    const name = (lang === 'he' && song.name_he) ? song.name_he : song.name;
+    const lyrics = (lang === 'he' && song.lyrics_he) ? song.lyrics_he : (song.lyrics || '');
+    const hasFile = !!song.file;
+
+    return `
+    <div class="track">
+      <div class="track-row">
+        <span class="num">${String(idx+1).padStart(2,'0')}</span>
+        <span class="name">${name}</span>
+        <span class="dur">${song.duration || ''}</span>
+      </div>
+
+      <div class="player">
+        <button class="play-btn" id="play-${id}" ${hasFile ? `onclick="togglePlay('${id}')"` : 'disabled style="opacity:.3;cursor:default;"'} aria-label="Play">
+          <svg class="icon-play" viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.8v12.4a1 1 0 0 0 1.5.87l10.5-6.2a1 1 0 0 0 0-1.74L4.5.93A1 1 0 0 0 3 1.8z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 16 16" fill="currentColor"><rect x="3" y="2" width="4" height="12" rx="1"/><rect x="9" y="2" width="4" height="12" rx="1"/></svg>
+        </button>
+
+        <div class="progress-wrap">
+          <div class="progress-bar" id="bar-${id}" ${hasFile ? `onclick="seek(event,'${id}')"` : ''}>
+            <div class="fill" id="fill-${id}"></div>
+            <div class="knob" id="knob-${id}"></div>
+          </div>
+          <span class="time" id="time-${id}">0:00 / 0:00</span>
+        </div>
+
+        <a class="icon-btn ${hasFile ? '' : 'disabled'}" ${hasFile ? `href="${song.file}" download` : ''} aria-label="Download" title="${s.tracks ? '' : ''}">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.5v9M4.5 7l3.5 3.5L11.5 7M2 13.5h12"/></svg>
+        </a>
+
+        <button class="lyrics-toggle" onclick="toggleLyrics('${id}')" id="lyricsBtn-${id}">${s.lyricsShow}</button>
+
+        ${hasFile ? `<audio id="audio-${id}" src="${song.file}" preload="metadata"></audio>` : ''}
+      </div>
+
+      ${!hasFile ? `<div class="no-audio-note">${s.noAudio}</div>` : ''}
+
+      <div class="lyrics-panel" id="lyrics-${id}">${lyrics.replace(/\n/g,'<br>')}</div>
+    </div>
+    `;
+  }).join('');
+
+  // wire up audio events for tracks that have a real file
+  album.songs.forEach((song, idx) => {
+    if (!song.file) return;
+    const id = `${currentAlbumIndex}-${idx}`;
+    const audio = document.getElementById(`audio-${id}`);
+    if (!audio) return;
+    audio.addEventListener('timeupdate', () => updateProgress(id));
+    audio.addEventListener('loadedmetadata', () => updateProgress(id));
+    audio.addEventListener('ended', () => {
+      document.getElementById(`play-${id}`).classList.remove('playing');
+    });
+  });
+}
+
+function togglePlay(id){
+  const audio = document.getElementById(`audio-${id}`);
+  const btn = document.getElementById(`play-${id}`);
+  if (!audio) return;
+
+  if (activeAudio && activeAudio !== audio){
+    activeAudio.pause();
+    document.querySelectorAll('.play-btn.playing').forEach(b => b.classList.remove('playing'));
+  }
+
+  if (audio.paused){
+    audio.play();
+    btn.classList.add('playing');
+    activeAudio = audio;
+  } else {
+    audio.pause();
+    btn.classList.remove('playing');
+  }
+}
+
+function updateProgress(id){
+  const audio = document.getElementById(`audio-${id}`);
+  if (!audio) return;
+  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+  const fill = document.getElementById(`fill-${id}`);
+  const knob = document.getElementById(`knob-${id}`);
+  const time = document.getElementById(`time-${id}`);
+  if (fill) fill.style.width = `${pct}%`;
+  if (knob) knob.style[document.body.classList.contains('lang-he') ? 'right' : 'left'] = `${pct}%`;
+  if (time) time.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
+}
+
+function seek(evt, id){
+  const audio = document.getElementById(`audio-${id}`);
+  const bar = document.getElementById(`bar-${id}`);
+  if (!audio || !audio.duration) return;
+  const rect = bar.getBoundingClientRect();
+  let ratio = (evt.clientX - rect.left) / rect.width;
+  if (document.body.classList.contains('lang-he')) ratio = 1 - ratio;
+  ratio = Math.min(Math.max(ratio, 0), 1);
+  audio.currentTime = ratio * audio.duration;
+}
+
+function toggleLyrics(id){
+  const panel = document.getElementById(`lyrics-${id}`);
+  const btn = document.getElementById(`lyricsBtn-${id}`);
+  const s = t();
+  const open = panel.classList.toggle('open');
+  btn.textContent = open ? s.lyricsHide : s.lyricsShow;
+}
+
+function showAlbums(){
+  if (activeAudio) { activeAudio.pause(); activeAudio = null; }
+  document.getElementById('detailView').classList.remove('active');
+  document.getElementById('albumsView').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleLang(){
+  lang = (lang === 'en') ? 'he' : 'en';
+  document.body.classList.toggle('lang-he', lang === 'he');
+  document.getElementById('htmlRoot').setAttribute('lang', lang);
+  document.getElementById('htmlRoot').setAttribute('dir', lang === 'he' ? 'rtl' : 'ltr');
+  renderStrings();
+  renderAlbums();
+  if (currentAlbumIndex !== null && document.getElementById('detailView').classList.contains('active')){
+    showDetail(currentAlbumIndex);
+  }
+}
+
+/* ---------------- init ---------------- */
+renderStrings();
+renderAlbums();
+</script>
+
+</body>
+</html>
